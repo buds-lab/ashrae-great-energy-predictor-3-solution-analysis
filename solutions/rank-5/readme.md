@@ -16,7 +16,7 @@ If you run into any trouble with the setup/code or have any questions please con
    2. https://www.kaggle.com/rohanrao/ashrae-half-and-half
 and these submit file(submission.csv) renamed to submission_simple_data_cleanup.csv and submission_half_and_half.csv respectively.
 
-### HARDWARE: 
+### HARDWARE 
 The following specs were used to create the original solution
  - Ubuntu 16.04.5 LTS
  - Intel Xeon Gold 6126 @ 2.60GHz x2(12Core/24Thread, Skylake)
@@ -52,7 +52,7 @@ python ./preproceeding_code/prepare_data_simplified.py
 ```
 
 
-### MODEL BUILD: 
+### MODEL BUILD 
 
 There are three options to produce the solution.
  1) very fast prediction
