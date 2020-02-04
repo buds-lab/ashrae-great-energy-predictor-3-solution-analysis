@@ -14,7 +14,7 @@ If you run into any trouble with the setup/code or have any questions please con
  - external_data               : leak_data(leak.feather, got from https://www.kaggle.com/yamsam/ashrae-leak-data-station) and other competitor's submission file. We used other competitor's submit files from
    1. https://www.kaggle.com/purist1024/ashrae-simple-data-cleanup-lb-1-08-no-leaks  
    2. https://www.kaggle.com/rohanrao/ashrae-half-and-half
-and these submit file(submission.csv) renamed to submission_simple_data_cleanup.csv and submission_half_and_half.csv respectively.
+and these submit file (`submission.csv`) renamed to `submission_simple_data_cleanup.csv` and `submission_half_and_half.csv` respectively.
 
 ### HARDWARE 
 The following specs were used to create the original solution
