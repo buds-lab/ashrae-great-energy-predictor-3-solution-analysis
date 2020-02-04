@@ -56,4 +56,4 @@ level1--submission_withoutleak001.ipynb
 2. Run Catboost notebook on a GPU instance and copy the prediction csv.gz file (here) in the main folder . 
 
 3. Run notebook:
-`level2--ensembling_model.ipynb```
+`level2--ensembling_model.ipynb`
