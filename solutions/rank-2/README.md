@@ -1,9 +1,10 @@
+# ASHRAE - Great Energy Predictor III - Second ranked solution
 
-Requirements:
-12 GB GPU (recommended), Python 3
+### Harward Requirements:
+12 GB GPU (recommended)
 
-Python packages:
-numpy==1.13.1
+### Python 3 packages:
+- numpy==1.13.1
 pandas==0.19.2
 tensorflow==1.14.0
 scikit-learn==0.22 
