@@ -6,7 +6,40 @@ This repository is for analysing all solutions, both winning and other public ke
 1. [Top 5 winning solutions - code and docs (submitted to Kaggle)](https://www.dropbox.com/sh/73iryui7t0w74ik/AAAY-yF87A2zrLdqHv11vFlsa?dl=0)
 2. [Top 5 winning solutions - explainer videos](https://www.dropbox.com/sh/tmnhkmy33vs3uya/AACVU-CcwyqGwApEvhNmSH4Qa?dl=0)
 
-# Solutions
+### First rank solution
+ - [Code](../blob/master/solutions/rank-1/)
+ - [Solution summary document (.docx)]()
+ - [Solution summary presentation (.pdf)]()
+ - [Sulution summay in Kaggle discussion board](https://www.kaggle.com/c/ashrae-energy-prediction/discussion/124709)
+ - [Solution explainer video]()
+ 
+### Second rank solution
+ - [Code](../blob/master/solutions/rank-2/)
+ - [Solution summary document (.pdf)](../blob/master/solutions/rank-2/ASHRAE%20-%20Great%20Energy%20Predictor%20III%20solution.pdf)
+ - [Solution summary presentation (.pdf)]()
+ - [Sulution summay in Kaggle discussion board](https://www.kaggle.com/c/ashrae-energy-prediction/discussion/123481)
+ - [Solution explainer video]()
+ 
+### Third rank solution
+ - [Code](../blob/master/solutions/rank-3/)
+ - [Solution summary document (.pdf)](../blob/master/solutions/rank-3/model_summary.pdf)
+ - [Sulution summay in Kaggle discussion board](https://www.kaggle.com/c/ashrae-energy-prediction/discussion/124984)
+ - [Solution explainer video]()
+ 
+### Fourth rank solution
+ - [Code](../blob/master/solutions/rank-4/)
+ - [Solution summary document (.pdf)](../blob/master/solutions/rank-4/MODEL%20SUMMARY.docx)
+ - [Sulution summay in Kaggle discussion board](https://www.kaggle.com/c/ashrae-energy-prediction/discussion/124788)
+ - [Solution explainer video]()
+
+### Fifth rank solution
+ - [Code](../blob/master/solutions/rank-5/)
+ - [Solution summary document (.docx)](../blob/master/solutions/rank-5/ModelSummary.docx)
+ - [Solution summary presentation (.pdf)](../blob/master/solutions/rank-5/ASHRAE_fifth_place_solution.pdf)
+ - [Sulution summay in Kaggle discussion board](https://www.kaggle.com/c/ashrae-energy-prediction/discussion/127086)
+ - [Solution explainer video]()
+
+## Comparison
 |    |   Final Rank | Team Name             |   Final Private Leaderboard Score | Preprocessing Strategy                                                     | Features Strategy Overview                                                                                                           | Modeling Strategy Overview                                                                                          | Post-Processing strategy                                               |
 |---:|-------------:|:----------------------|----------------------------------:|:---------------------------------------------------------------------------|:-------------------------------------------------------------------------------------------------------------------------------------|:--------------------------------------------------------------------------------------------------------------------|:-----------------------------------------------------------------------|
 |  0 |            1 | Isamu & Matt          |                             1.231 | Removed anomalies in meter data and imputed missing values in weather data | 28 features, Extensively focused on feature engineering and selected                                                                 | LightGBM, CatBoost, and MLP models trained on different subsets of the training and public data                     | Ensembled the model predictions using weighted generalized mean.       |
