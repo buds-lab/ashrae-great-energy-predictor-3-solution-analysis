@@ -1,4 +1,4 @@
-# ashrae-great-predictor-shootout-3-analysis-of-models
+# ASHRAE - Great Energy Predictor III - Top 5 winning solutions
 
 This repository is for analysing all solutions, both winning and other public kernals, and summarizing their characteristics -- ML workflow, score comparison across different sites, building types, meter types, etc.
 
