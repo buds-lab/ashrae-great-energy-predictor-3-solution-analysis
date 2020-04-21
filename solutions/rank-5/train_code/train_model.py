@@ -8,7 +8,7 @@ import pandas as pd
 import _pickle as cPickle
 import argparse
 from copy import deepcopy
-#import japanize_matplotlib
+import japanize_matplotlib
 import lightgbm as lgb
 import matplotlib.pyplot as plt
 import pickle
@@ -114,7 +114,7 @@ for i in [3,2,1,0]:
     
 
 # save model
-save_name = '{}\\..\\model\\model_use_{}_seed{}_leave{}_lr{}_tree{}.pkl'.format(code_path, args.train_file.replace('.ftr', ''),args.seed, args.num_leaves, str(args.learning_rate).replace('.', ''), args.n_estimators)
+save_name = '{}/../model/model_use_{}_seed{}_leave{}_lr{}_tree{}.pkl'.format(code_path, args.train_file.replace('.ftr', ''),args.seed, args.num_leaves, str(args.learning_rate).replace('.', ''), args.n_estimators)
 with open(save_name, 'wb') as f:
     pickle.dump(models, f)
 
@@ -161,6 +161,6 @@ for i in [3, 2, 1, 0]:
 
 #save model
 
-save_name = '{}\\..\\model\\model_all_use_{}_seed{}_leave{}_lr{}_tree{}.pkl'.format(code_path, args.train_file.replace('.ftr', ''),args.seed, args.num_leaves, str(args.learning_rate).replace('.', ''), args.n_estimators)
+save_name = '{}/../model/model_all_use_{}_seed{}_leave{}_lr{}_tree{}.pkl'.format(code_path, args.train_file.replace('.ftr', ''),args.seed, args.num_leaves, str(args.learning_rate).replace('.', ''), args.n_estimators)
 with open(save_name, 'wb') as f:
     pickle.dump(models_all, f)

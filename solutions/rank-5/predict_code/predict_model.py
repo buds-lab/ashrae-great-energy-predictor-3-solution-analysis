@@ -8,7 +8,7 @@ import pandas as pd
 import _pickle as cPickle
 import argparse
 from copy import deepcopy
-#import japanize_matplotlib
+import japanize_matplotlib
 import lightgbm as lgb
 import matplotlib.pyplot as plt
 import pickle
@@ -33,8 +33,8 @@ args = parser.parse_args()#args=['1', '0.5','train_fe.ftr', 'test_fe.ftr'])
 
 # print(args)
 
-train_fe = pd.read_feather(f'{code_path}\\..\\prepare_data\\{args.train_file}')
-test_fe = pd.read_feather(f'{code_path}\\..\\prepare_data\\{args.test_file}')
+train_fe = pd.read_feather(f'{code_path}/../prepare_data/{args.train_file}')
+test_fe = pd.read_feather(f'{code_path}/../prepare_data/{args.test_file}')
 
 target_fe = train_fe['meter_reading']
 train_fe = train_fe.drop('meter_reading', axis=1)
@@ -66,7 +66,7 @@ def meter_predict(meter, model, X_test, best_iteration, iteration_mul=1.5):
     return pd.concat(y_pred).sort_index()
 
 # load model
-load_name = '{}\\..\\model\\model_use_{}_seed{}_leave{}_lr{}_tree{}.pkl'.format(code_path, args.train_file.replace('.ftr', ''),args.seed, args.num_leaves, str(args.learning_rate).replace('.', ''), args.n_estimators)
+load_name = '{}/../model/model_use_{}_seed{}_leave{}_lr{}_tree{}.pkl'.format(code_path, args.train_file.replace('.ftr', ''),args.seed, args.num_leaves, str(args.learning_rate).replace('.', ''), args.n_estimators)
 with open(load_name, 'rb') as f:
     models = pickle.load(f)
 
@@ -99,7 +99,7 @@ for meter in [0,1,2,3]:
             best_iteration[meter][i] = 200
 
 #load model
-load_name = '{}\\..\\model\\model_all_use_{}_seed{}_leave{}_lr{}_tree{}.pkl'.format(code_path, args.train_file.replace('.ftr', ''),args.seed, args.num_leaves, str(args.learning_rate).replace('.', ''), args.n_estimators)
+load_name = '{}/../model/model_all_use_{}_seed{}_leave{}_lr{}_tree{}.pkl'.format(code_path, args.train_file.replace('.ftr', ''),args.seed, args.num_leaves, str(args.learning_rate).replace('.', ''), args.n_estimators)
 with open(load_name, 'rb') as f:
     models_all = pickle.load(f)
 
@@ -113,11 +113,11 @@ y_preds = pd.concat(preds).sort_index()
 # lgb.plot_importance(models_all[0], importance_type='gain', figsize=(10,20))
 # lgb.plot_importance(models_all[0], importance_type='split', figsize=(10,20))
 
-submission = pd.read_csv(f'{code_path}\\..\\input\\sample_submission.csv')
+submission = pd.read_csv(f'{code_path}/../input/sample_submission.csv')
 submission['meter_reading'] = (np.expm1(y_preds))
 submission.loc[submission['meter_reading']<0, 'meter_reading'] = 0
 
-save_name = '{}\\..\\output\\use_{}_seed{}_leave{}_lr{}_tree{}_mul{}.csv'.format(code_path, args.train_file.replace('.ftr', ''), args.seed, args.num_leaves, str(args.learning_rate).replace('.', ''), args.n_estimators, str(args.iteration_mul).replace('.', ''))
+save_name = '{}/../output/use_{}_seed{}_leave{}_lr{}_tree{}_mul{}.csv'.format(code_path, args.train_file.replace('.ftr', ''), args.seed, args.num_leaves, str(args.learning_rate).replace('.', ''), args.n_estimators, str(args.iteration_mul).replace('.', ''))
 submission.to_csv(save_name, index=False)
 
 submission.head()
