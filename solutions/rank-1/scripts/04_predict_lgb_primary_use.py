@@ -99,43 +99,47 @@ if __name__ == "__main__":
             target_encode_cols = [x for x in test.columns if "gte" in x]
             test[target_encode_cols] = test[target_encode_cols]/np.log1p(test[["square_feet"]].values)
 
-    # get base file name
-    test_preds = np.zeros(len(test))
-    for primary_use_iter, primary_use_group in enumerate(PRIMARY_USE_GROUPINGS):
 
-        # create sub model path
+    with timer("Predicting"):
+        # get base file name    
+        test_preds = np.zeros(len(test))
+        for primary_use_iter, primary_use_group in enumerate(PRIMARY_USE_GROUPINGS):
+
+            # create sub model path
+            if args.normalize_target:
+                sub_model_path = f"{MODEL_PATH}/lgb-split_primary_use/target_normalization/primary_use_{primary_use_iter}"
+            else:
+                sub_model_path = f"{MODEL_PATH}/lgb-split_primary_use/no_normalization/primary_use_{primary_use_iter}"
+
+            # remove indices not in this primary_use
+            X = test.loc[np.isin(test.primary_use, primary_use_group), FEATURES]
+            print(f"split primary_use {primary_use_iter}: test size {len(X)}")
+
+            # load models
+            model_list = [
+                lgb.Booster(model_file=model_name)
+                for model_name in glob.glob(f"{sub_model_path}/*")
+            ]
+
+            # predict 
+            msg = f'Predicting for psu {primary_use_iter} - models# {len(model_list)}, test# {len(X)}'
+            with timer(msg):
+                assert len(model_list) != 0, "No models to load"
+                if len(model_list) == 1:
+                    preds = model_list[0].predict(X)
+                else:
+                    preds = np.mean([model.predict(X) for model in model_list], 0)
+                test_preds[np.isin(test.primary_use, primary_use_group)] = preds
+
+        # invert target transformation    
         if args.normalize_target:
-            sub_model_path = f"{MODEL_PATH}/lgb-split_primary_use/target_normalization/primary_use_{primary_use_iter}"
-        else:
-            sub_model_path = f"{MODEL_PATH}/lgb-split_primary_use/no_normalization/primary_use_{primary_use_iter}"
-        
-        # remove indices not in this primary_use
-        X = test.loc[np.isin(test.primary_use, primary_use_group), FEATURES]
-        print(f"split primary_use {primary_use_iter}: test size {len(X)}")
+            test_preds *= np.log1p(test.square_feet)
 
-        # load models
-        model_list = [
-            lgb.Booster(model_file=model_name)
-            for model_name in glob.glob(f"{sub_model_path}/*")
-        ]
-        
-        # predict    
-        assert len(model_list) != 0, "No models to load"
-        if len(model_list) == 1:
-            preds = model_list[0].predict(X)
-        else:
-            preds = np.mean([model.predict(X) for model in model_list], 0)
-        test_preds[np.isin(test.primary_use, primary_use_group)] = preds
-        
-    # invert target transformation    
-    if args.normalize_target:
-        test_preds *= np.log1p(test.square_feet)
-        
-    test_preds = np.expm1(test_preds)
+        test_preds = np.expm1(test_preds)
 
-    # correct site 0
-    test_preds[(test.site_id == 0) & (test.meter == 0)] *= 3.4118
-    test_preds[test_preds < 0 ] = 0
+        # correct site 0
+        test_preds[(test.site_id == 0) & (test.meter == 0)] *= 3.4118
+        test_preds[test_preds < 0 ] = 0
 
     # save data
     if args.normalize_target:

@@ -101,22 +101,37 @@ if __name__ == "__main__":
             # remove indices not in this meter
             X = test.loc[test.meter == m, FEATURES]
             print(f"split meter {m}: test size {len(X)}")
-
+            
             # load models
-            model_list = [
-                lgb.Booster(model_file=model_name)
-                for model_name in glob.glob(f"{sub_model_path}/*")
-            ]
+            model_list = glob.glob(f"{sub_model_path}/*")
+            assert len(model_list) != 0, "No models to load"
 
-            # predict 
+            # predict    
             msg = f'Predicting for meter {m} - models# {len(model_list)}, test# {len(X)}'
-            with timer(msg):            
-                assert len(model_list) != 0, "No models to load"
-                if len(model_list) == 1:
-                    preds = model_list[0].predict(X)
-                else:
-                    preds = np.mean([model.predict(X) for model in model_list], 0)
-                test_preds[test.meter == m] = preds
+            with timer(msg):
+                preds = 0
+                for model_name in model_list:
+                    model = lgb.Booster(model_file=model_name)
+                    with timer(f' Model {model_name}'):
+                        preds += model.predict(X) / len(model_list)
+                test_preds[test.meter == m] = preds            
+
+# Old code
+#             # load models
+#             model_list = [
+#                 lgb.Booster(model_file=model_name)
+#                 for model_name in glob.glob(f"{sub_model_path}/*")
+#             ]
+
+#             # predict 
+#             msg = f'Predicting for meter {m} - models# {len(model_list)}, test# {len(X)}'
+#             with timer(msg):            
+#                 assert len(model_list) != 0, "No models to load"
+#                 if len(model_list) == 1:
+#                     preds = model_list[0].predict(X)
+#                 else:
+#                     preds = np.mean([model.predict(X) for model in model_list], 0)
+#                 test_preds[test.meter == m] = preds
 
         # invert target transformation    
         if args.normalize_target:

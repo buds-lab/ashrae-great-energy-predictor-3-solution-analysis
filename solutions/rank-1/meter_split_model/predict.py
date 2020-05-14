@@ -23,7 +23,7 @@ import lightgbm as lgb
 
 from sklearn.metrics import mean_squared_error
 
-from utils import reduce_mem_usage, add_holiyday, correct_localtime, add_lag_feature, add_sg, preprocess
+from utils import reduce_mem_usage, add_holiyday, correct_localtime, add_lag_feature, add_sg, preprocess, timer
 
 from pathlib import Path
 import pickle
@@ -77,7 +77,8 @@ def create_X(test_df, building_meta_df, weather_test_df, target_meter):
     target_test_df = test_df[test_df['meter'] == target_meter]
     target_test_df = target_test_df.merge(building_meta_df, on='building_id', how='left')
     target_test_df = target_test_df.merge(weather_test_df, on=['site_id', 'timestamp'], how='left')
-    X_test = target_test_df[feature_cols + category_cols + ['month']]
+    #X_test = target_test_df[feature_cols + category_cols + ['month']]
+    X_test = target_test_df[feature_cols + category_cols ]
     return X_test
 
 
@@ -111,45 +112,48 @@ def predict(deubg=True):
         [models0, models1, models2, models3, bid_map] = pickle.load(f)
 
 
-    # categorize primary_use column to reduce memory on merge...
-    building_meta_df = pd.read_feather(DATA_DIR/'building_metadata.feather')
+    with timer("Preprocessing"):        
+        # categorize primary_use column to reduce memory on merge...
+        building_meta_df = pd.read_feather(DATA_DIR/'building_metadata.feather')
 
-    primary_use_list = building_meta_df['primary_use'].unique()
-    primary_use_dict = {key: value for value, key in enumerate(primary_use_list)} 
-    print('primary_use_dict: ', primary_use_dict)
-    building_meta_df['primary_use'] = building_meta_df['primary_use'].map(primary_use_dict)
+        primary_use_list = building_meta_df['primary_use'].unique()
+        primary_use_dict = {key: value for value, key in enumerate(primary_use_list)} 
+        print('primary_use_dict: ', primary_use_dict)
+        building_meta_df['primary_use'] = building_meta_df['primary_use'].map(primary_use_dict)
 
-    year_map = building_meta_df.year_built.value_counts()
-    building_meta_df['year_cnt'] = building_meta_df.year_built.map(year_map)
+        year_map = building_meta_df.year_built.value_counts()
+        building_meta_df['year_cnt'] = building_meta_df.year_built.map(year_map)
 
-    building_meta_df = reduce_mem_usage(building_meta_df, use_float16=True)
+        building_meta_df = reduce_mem_usage(building_meta_df, use_float16=True)
 
-    gc.collect()
+        gc.collect()
 
 
-    print('loading...')
-    test_df = pd.read_feather(DATA_DIR/'test.feather')
-    weather_test_df = pd.read_feather(DATA_DIR/'weather_test.feather')
+        print('loading...')
+        test_df = pd.read_feather(DATA_DIR/'test.feather')
+        weather_test_df = pd.read_feather(DATA_DIR/'weather_test.feather')
 
-    weather_test_df = weather_test_df.drop_duplicates(['timestamp', 'site_id'])
+        weather_test_df = weather_test_df.drop_duplicates(['timestamp', 'site_id'])
 
-    correct_localtime(weather_test_df)
-    add_holiyday(weather_test_df)
+        correct_localtime(weather_test_df)
+        add_holiyday(weather_test_df)
 
-    print('preprocessing building...')
-    test_df['date'] = test_df['timestamp'].dt.date
-    preprocess(test_df)
+        print('preprocessing building...')
+        test_df['date'] = test_df['timestamp'].dt.date
+        preprocess(test_df)
 
-    print('preprocessing weather...')
-    weather_test_df = weather_test_df.groupby('site_id').apply(lambda group: group.interpolate(limit_direction='both'))
-    weather_test_df.groupby('site_id').apply(lambda group: group.isna().sum())
+        print('preprocessing weather...')
+        weather_test_df = weather_test_df.groupby('site_id').apply(lambda group: group.interpolate(limit_direction='both'))
+        weather_test_df.groupby('site_id').apply(lambda group: group.isna().sum())
 
-    add_sg(weather_test_df)
+        add_sg(weather_test_df)
+        
+    with timer("Feature engineering"):        
 
-    add_lag_feature(weather_test_df, window=3)
-    add_lag_feature(weather_test_df, window=72)
+        add_lag_feature(weather_test_df, window=3)
+        add_lag_feature(weather_test_df, window=72)
 
-    test_df['bid_cnt'] = test_df.building_id.map(bid_map)
+        test_df['bid_cnt'] = test_df.building_id.map(bid_map)
 
     print('reduce mem usage...')
     test_df = reduce_mem_usage(test_df, use_float16=True)
@@ -163,10 +167,13 @@ def predict(deubg=True):
     sample_submission = reduce_mem_usage(sample_submission)
 
     # meter 0
+    
     X_test = create_X(test_df, building_meta_df, weather_test_df, target_meter=0)
     gc.collect()
+    X_test.info()
 
-    y_test0 = pred(X_test, models0)
+    with timer("Predicting meter# 0"):
+        y_test0 = pred(X_test, models0)
 
     #sns.distplot(y_test0)
 
@@ -180,7 +187,8 @@ def predict(deubg=True):
     X_test = create_X(test_df, building_meta_df, weather_test_df, target_meter=1)
     gc.collect()
 
-    y_test1 = pred(X_test, models1)
+    with timer("Predicting meter# 1"):
+        y_test1 = pred(X_test, models1)
     #sns.distplot(y_test1)
 
     print(X_test.shape, y_test1.shape)
@@ -192,7 +200,8 @@ def predict(deubg=True):
     X_test = create_X(test_df, building_meta_df, weather_test_df, target_meter=2)
     gc.collect()
 
-    y_test2 = pred(X_test, models2)
+    with timer("Predicting meter# 2"):
+        y_test2 = pred(X_test, models2)
     #sns.distplot(y_test2)
 
     print(X_test.shape, y_test2.shape)
@@ -205,7 +214,8 @@ def predict(deubg=True):
     X_test = create_X(test_df, building_meta_df, weather_test_df, target_meter=3)
     gc.collect()
 
-    y_test3 = pred(X_test, models3)
+    with timer("Predicting meter# 3"):
+        y_test3 = pred(X_test, models3)
 
     #sns.distplot(y_test3)
     print(X_test.shape, y_test3.shape)
@@ -237,41 +247,43 @@ def predict(deubg=True):
     #np.log1p(sample_submission['meter_reading']).hist(bins=100)
 
     # # replace leak data
+    
+    with timer("Post-processing"):
 
-    if replace_leak:
-        leak_df = pd.read_feather(LEAK_DIR/'leak.feather')
+        if replace_leak:
+            leak_df = pd.read_feather(LEAK_DIR/'leak.feather')
 
-        print(leak_df.duplicated().sum())
-        print(leak_df.meter.value_counts())
+            print(leak_df.duplicated().sum())
+            print(leak_df.meter.value_counts())
 
-        leak_df.fillna(0, inplace=True)
-        leak_df = leak_df[(leak_df.timestamp.dt.year > 2016) & (leak_df.timestamp.dt.year < 2019)]
-        leak_df.loc[leak_df.meter_reading < 0, 'meter_reading'] = 0 # remove large negative values
-        leak_df = leak_df[leak_df.building_id!=245]
+            leak_df.fillna(0, inplace=True)
+            leak_df = leak_df[(leak_df.timestamp.dt.year > 2016) & (leak_df.timestamp.dt.year < 2019)]
+            leak_df.loc[leak_df.meter_reading < 0, 'meter_reading'] = 0 # remove large negative values
+            leak_df = leak_df[leak_df.building_id!=245]
 
-        sample_submission.loc[sample_submission.meter_reading < 0, 'meter_reading'] = 0
+            sample_submission.loc[sample_submission.meter_reading < 0, 'meter_reading'] = 0
 
-        test_df['pred'] = sample_submission.meter_reading
+            test_df['pred'] = sample_submission.meter_reading
 
-        leak_df = leak_df.merge(test_df[['building_id', 'meter', 'timestamp', 'pred', 'row_id']], left_on = ['building_id', 'meter', 'timestamp'], right_on = ['building_id', 'meter', 'timestamp'], how = "left")
-        leak_df = leak_df.merge(building_meta_df[['building_id', 'site_id']], on='building_id', how='left')
+            leak_df = leak_df.merge(test_df[['building_id', 'meter', 'timestamp', 'pred', 'row_id']], left_on = ['building_id', 'meter', 'timestamp'], right_on = ['building_id', 'meter', 'timestamp'], how = "left")
+            leak_df = leak_df.merge(building_meta_df[['building_id', 'site_id']], on='building_id', how='left')
 
-    if replace_leak:
-        leak_df.site_id.unique()
+        if replace_leak:
+            leak_df.site_id.unique()
 
-    if replace_leak:
-        leak_df['pred_l1p'] = np.log1p(leak_df.pred)
-        leak_df['meter_reading_l1p'] = np.log1p(leak_df.meter_reading)
+        if replace_leak:
+            leak_df['pred_l1p'] = np.log1p(leak_df.pred)
+            leak_df['meter_reading_l1p'] = np.log1p(leak_df.meter_reading)
 
-        sns.distplot(leak_df.pred_l1p)
-        sns.distplot(leak_df.meter_reading_l1p)
+            sns.distplot(leak_df.pred_l1p)
+            sns.distplot(leak_df.meter_reading_l1p)
 
-        leak_score = np.sqrt(mean_squared_error(leak_df.pred_l1p, leak_df.meter_reading_l1p))
+            leak_score = np.sqrt(mean_squared_error(leak_df.pred_l1p, leak_df.meter_reading_l1p))
 
 
-    if replace_leak:
-        leak_df = leak_df[['meter_reading', 'row_id']].set_index('row_id').dropna()
-        sample_submission.loc[leak_df.index, 'meter_reading'] = leak_df['meter_reading']
+        if replace_leak:
+            leak_df = leak_df[['meter_reading', 'row_id']].set_index('row_id').dropna()
+            sample_submission.loc[leak_df.index, 'meter_reading'] = leak_df['meter_reading']
 
 
     if not debug and replace_leak:

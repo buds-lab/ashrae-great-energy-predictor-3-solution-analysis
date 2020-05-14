@@ -1,5 +1,5 @@
 {
-    "DATA_PATH": ".\\input",
-    "MODEL_PATH": ".\\models",
-    "OUTPUT_PATH": ".\\output"
+    "DATA_PATH": "./input",
+    "MODEL_PATH": "./models",
+    "OUTPUT_PATH": "./output"
 }

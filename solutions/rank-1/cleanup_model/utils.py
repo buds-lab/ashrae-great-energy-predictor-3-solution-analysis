@@ -2,14 +2,23 @@ import pandas as pd
 import numpy as np
 import os
 import warnings
+import time
 
+from datetime import datetime
 from lightgbm import LGBMRegressor
 from sklearn.base import BaseEstimator, RegressorMixin, clone
 from sklearn.metrics import mean_squared_log_error
 from scipy.signal import savgol_filter as sg
+from contextlib import contextmanager, redirect_stdout
 
 pd.set_option("max_columns", 500)
 
+@contextmanager
+def timer(name):
+    print(f'{datetime.now()} - [{name}] ...')
+    t0 = time.time()
+    yield
+    print(f'{datetime.now()} - [{name}] done in {time.time() - t0:.0f} s\n')
 
 def add_sg(df):
     w = 11

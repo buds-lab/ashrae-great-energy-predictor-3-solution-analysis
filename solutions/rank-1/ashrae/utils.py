@@ -4,6 +4,7 @@ import json
 import string
 import random
 import itertools
+from datetime import datetime
 import numpy as np
 import pandas as pd
 from numba import jit
@@ -36,9 +37,10 @@ def take_last(x): return x.values[-1]
 
 @contextmanager
 def timer(name):
+    print(f'{datetime.now()} - [{name}] ...')
     t0 = time.time()
     yield
-    print(f'[{name}] done in {time.time() - t0:.0f} s')
+    print(f'{datetime.now()} - [{name}] done in {time.time() - t0:.0f} s\n')
     
 
 def make_dir(dir_name):
@@ -290,10 +292,10 @@ def load_data(data_name):
 
     # raw weather
     if data_name == "train_weather":
-        return pd.read_csv(f"{DATA_PATH}/train_weather.csv")
+        return pd.read_csv(f"{DATA_PATH}/weather_train.csv")
 
     if data_name == "test_weather":
-        return pd.read_csv(f"{DATA_PATH}/test_weather.csv")        
+        return pd.read_csv(f"{DATA_PATH}/weather_test.csv")        
 
     if data_name == "weather":
         return load_data("train_weather"), load_data("test_weather")

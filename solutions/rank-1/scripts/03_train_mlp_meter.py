@@ -1,6 +1,6 @@
 import os
-#os.environ["CUDA_DEVICE_ORDER"]="PCI_BUS_ID"
-#os.environ["CUDA_VISIBLE_DEVICES"]="1"
+os.environ["CUDA_DEVICE_ORDER"]="PCI_BUS_ID"
+os.environ["CUDA_VISIBLE_DEVICES"]="0"
 
 import argparse
 import keras
@@ -119,7 +119,8 @@ def train_mlp(
         model.summary()
         
     #-------------------------
-    with timer("Training"):
+    msg = f'Training {save_name} - train# {train.shape} val# {valid.shape}'
+    with timer(msg):
         model.fit(
             *get_inputs(train), 
             batch_size=batch_size,
@@ -160,47 +161,49 @@ if __name__ == "__main__":
     model_name = f"mlp-split_meter"
     make_dir(f"{MODEL_PATH}/{model_name}")
 
+    with timer("Training"):
+        for seed in [0]:
+            #for n_months in [1,2,3,4,5,6]:
+            for n_months in [3]: #@Matt, n_months=3 brings optimal tradeoff between single model performance and diversity for the ensemble
+                # validation_months_list = get_validation_months(n_months) #@Matt, fixed the bug -> hard-coded n_months
+                validation_months_list = get_validation_months(n_months)
 
-    for seed in range(3):
-        for n_months in [1,2,3,4,5,6]:
-            validation_months_list = get_validation_months(6)
+                for fold_, validation_months in enumerate(validation_months_list):    
+                    for m in range(4):    
 
-            for fold_, validation_months in enumerate(validation_months_list):    
-                for m in range(4):    
+                        # create sub model path
+                        if args.normalize_target:
+                            sub_model_path = f"{MODEL_PATH}/{model_name}/target_normalization/meter_{m}"
+                            make_dir(sub_model_path)
+                        else:
+                            sub_model_path = f"{MODEL_PATH}/{model_name}/no_normalization/meter_{m}"
+                            make_dir(sub_model_path)
 
-                    # create sub model path
-                    if args.normalize_target:
-                        sub_model_path = f"{MODEL_PATH}/{model_name}/target_normalization/meter_{m}"
-                        make_dir(sub_model_path)
-                    else:
-                        sub_model_path = f"{MODEL_PATH}/{model_name}/no_normalization/meter_{m}"
-                        make_dir(sub_model_path)
+                        # create model version
+                        model_version = "_".join([
+                            str(seed), str(n_months), str(fold_), 
+                        ])    
 
-                    # create model version
-                    model_version = "_".join([
-                        str(seed), str(n_months), str(fold_), 
-                    ])    
+                        # check if we can skip this model
+                        full_sub_model_name = f"{sub_model_path}/{model_version}.h5"
+                        if os.path.exists(full_sub_model_name):
+                            if not args.overwrite:
+                                break
 
-                    # check if we can skip this model
-                    full_sub_model_name = f"{sub_model_path}/{model_version}.h5"
-                    if os.path.exists(full_sub_model_name):
-                        if not args.overwrite:
-                            break
+                        # get this months indices
+                        trn_idx = np.where(np.isin(train.month, validation_months, invert=True))[0]
+                        val_idx = np.where(np.isin(train.month, validation_months, invert=False))[0]
+                        #rint(f"split meter: train size {len(trn_idx)} val size {len(val_idx)}")
 
-                    # get this months indices
-                    trn_idx = np.where(np.isin(train.month, validation_months, invert=True))[0]
-                    val_idx = np.where(np.isin(train.month, validation_months, invert=False))[0]
-                    print(f"split meter: train size {len(trn_idx)} val size {len(val_idx)}")
+                        # remove indices not in this meter
+                        trn_idx = np.intersect1d(trn_idx, np.where(train.meter == m)[0])
+                        val_idx = np.intersect1d(val_idx, np.where(train.meter == m)[0])
+                        #rint(f"split meter: train size {len(trn_idx)} val size {len(val_idx)}")
 
-                    # remove indices not in this meter
-                    trn_idx = np.intersect1d(trn_idx, np.where(train.meter == m)[0])
-                    val_idx = np.intersect1d(val_idx, np.where(train.meter == m)[0])
-                    print(f"split meter: train size {len(trn_idx)} val size {len(val_idx)}")
-
-                    # fit model
-                    train_mlp(
-                        train = train.loc[trn_idx, FEATURES+["target"]],
-                        valid = train.loc[val_idx, FEATURES+["target"]],
-                        cat_counts = dict(meter_cat_counts.loc[m]),
-                        save_name = full_sub_model_name
-                    )
+                        # fit model
+                        train_mlp(
+                            train = train.loc[trn_idx, FEATURES+["target"]],
+                            valid = train.loc[val_idx, FEATURES+["target"]],
+                            cat_counts = dict(meter_cat_counts.loc[m]),
+                            save_name = full_sub_model_name
+                        )

@@ -35,3 +35,6 @@ python scripts/04_predict_lgb_primary_use.py
 
 python scripts/04_predict_lgb_site.py --normalize_target
 python scripts/04_predict_lgb_site.py
+
+python python scripts/04_predict_mlp_meter.py --normalize_target
+python python scripts/04_predict_mlp_meter.py

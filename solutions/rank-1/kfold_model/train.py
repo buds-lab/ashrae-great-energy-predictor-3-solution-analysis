@@ -10,7 +10,7 @@ from sklearn.model_selection import KFold
 import datetime
 import gc
 
-from utils import fill_weather_dataset, reduce_mem_usage, features_engineering, add_sg
+from utils import fill_weather_dataset, reduce_mem_usage, features_engineering, add_sg, timer
 
 
 DATA_PATH       = "../input/"
@@ -31,53 +31,54 @@ def train(debug=True):
 
     black_day = 10
     
-    train_df = pd.read_csv(DATA_PATH + 'train.csv')
+    with timer("Preprocessing"):    
+        train_df = pd.read_csv(DATA_PATH + 'train.csv')
 
-    # Remove outliers
-    train_df = train_df [ train_df['building_id'] != 1099 ]
-    train_df = train_df.query('not (building_id <= 104 & meter == 0 & timestamp <= "2016-05-20")')
+        # Remove outliers
+        train_df = train_df [ train_df['building_id'] != 1099 ]
+        train_df = train_df.query('not (building_id <= 104 & meter == 0 & timestamp <= "2016-05-20")')
 
-    building_df = pd.read_csv(DATA_PATH + 'building_metadata.csv')
-    weather_df = pd.read_csv(DATA_PATH + 'weather_train.csv')
-
-
-    # remove continuous zero 
-    train_df_black = pd.read_feather(PROCESSED_PATH + 'train_black.feather')
-    train_df = train_df[train_df_black.black_count < 24*black_day]
-
-    del train_df_black
-    gc.collect()
+        building_df = pd.read_csv(DATA_PATH + 'building_metadata.csv')
+        weather_df = pd.read_csv(DATA_PATH + 'weather_train.csv')
 
 
-    # site -0 correction
-    site_0_bids = building_df[building_df.site_id == 0].building_id.unique()
-    train_df.loc[(train_df.building_id.isin(site_0_bids)) & (train_df.meter==0), 'meter_reading'] = train_df[(train_df.building_id.isin(site_0_bids)) & (train_df.meter==0)]['meter_reading'] * 0.2931
+        # remove continuous zero 
+        train_df_black = pd.read_feather(PROCESSED_PATH + 'train_black.feather')
+        train_df = train_df[train_df_black.black_count < 24*black_day]
+
+        del train_df_black
+        gc.collect()
 
 
-    # ## Fill Weather Information
-    weather_df = fill_weather_dataset(weather_df)
-    add_sg(weather_df)
+        # site -0 correction
+        site_0_bids = building_df[building_df.site_id == 0].building_id.unique()
+        train_df.loc[(train_df.building_id.isin(site_0_bids)) & (train_df.meter==0), 'meter_reading'] = train_df[(train_df.building_id.isin(site_0_bids)) & (train_df.meter==0)]['meter_reading'] * 0.2931
 
 
-    # ## Memory Reduction
-    train_df = reduce_mem_usage(train_df,use_float16=True)
-    building_df = reduce_mem_usage(building_df,use_float16=True)
-    weather_df = reduce_mem_usage(weather_df,use_float16=True)
+        # ## Fill Weather Information
+        weather_df = fill_weather_dataset(weather_df)
+        add_sg(weather_df)
 
 
-    # ## Merge Data
-    # 
-    # We need to add building and weather information into training dataset.
+        # ## Memory Reduction
+        train_df = reduce_mem_usage(train_df,use_float16=True)
+        building_df = reduce_mem_usage(building_df,use_float16=True)
+        weather_df = reduce_mem_usage(weather_df,use_float16=True)
 
-    train_df = train_df.merge(building_df, left_on='building_id',right_on='building_id',how='left')
-    train_df = train_df.merge(weather_df,how='left',left_on=['site_id','timestamp'],right_on=['site_id','timestamp'])
-    del weather_df
-    gc.collect()
+
+        # ## Merge Data
+        # 
+        # We need to add building and weather information into training dataset.
+
+        train_df = train_df.merge(building_df, left_on='building_id',right_on='building_id',how='left')
+        train_df = train_df.merge(weather_df,how='left',left_on=['site_id','timestamp'],right_on=['site_id','timestamp'])
+        del weather_df
+        gc.collect()
 
 
     # ## Features Engineering
-
-    train_df = features_engineering(train_df)
+    with timer("Feature engineering"):
+        train_df = features_engineering(train_df)
 
     # ## Features & Target Variables
 
@@ -101,20 +102,25 @@ def train(debug=True):
 
     kf = KFold(n_splits=3)
     models = []
-    for train_index,test_index in kf.split(features):
-        train_features = features.loc[train_index]
-        train_target = target.loc[train_index]
+    
+    with timer("Training"):    
+        for train_index,test_index in kf.split(features):
+            train_features = features.loc[train_index]
+            train_target = target.loc[train_index]
 
-        test_features = features.loc[test_index]
-        test_target = target.loc[test_index]
+            test_features = features.loc[test_index]
+            test_target = target.loc[test_index]
 
-        d_training = lgb.Dataset(train_features, label=train_target,categorical_feature=categorical_features, free_raw_data=False)
-        d_test = lgb.Dataset(test_features, label=test_target,categorical_feature=categorical_features, free_raw_data=False)
+            d_training = lgb.Dataset(train_features, label=train_target,categorical_feature=categorical_features, free_raw_data=False)
+            d_test = lgb.Dataset(test_features, label=test_target,categorical_feature=categorical_features, free_raw_data=False)
 
-        model = lgb.train(params, train_set=d_training, num_boost_round=nround, valid_sets=[d_training,d_test], verbose_eval=25, early_stopping_rounds=50)
-        models.append(model)
-        del train_features, train_target, test_features, test_target, d_training, d_test
-        gc.collect()
+            msg = f'Training - train# {len(train_index)} val# {len(test_index)}'
+            with timer(msg):
+                model = lgb.train(params, train_set=d_training, num_boost_round=nround, valid_sets=[d_training,d_test], verbose_eval=25, early_stopping_rounds=50)
+
+            models.append(model)
+            del train_features, train_target, test_features, test_target, d_training, d_test
+            gc.collect()
 
 
     del features, target

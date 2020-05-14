@@ -166,44 +166,53 @@ if __name__ == "__main__":
         add_features(test)
     
     with timer("Free up memory"):
-        del train_weather, test_weather
+        del train_weather, test_weather, building_meta
         gc.collect()
-        
-    train.info()
-    test.info()
         
     with timer("Reduce memory usage"):
         train, _ = reduce_mem_usage(train, skip_cols=['ts', 'timestamp'], verbose=False)
         test, _ = reduce_mem_usage(test, skip_cols=['ts', 'timestamp'], verbose=False)
-    
-    with timer("Add target encoding features"):
+        
+
+    with timer("Add target encoding features - train"):
         train["target"] = np.log1p(train.meter_reading)
         test["target"] = np.mean(train["target"])
-    
+        
         features = []
         good_train = train[train.is_bad_meter_reading.values==0].copy()
+        good_train_ = good_train.copy()
         for group_cols, prior_cols in groups_and_priors.items():
+            print(group_cols)
             features.append(f"gte_{'_'.join(group_cols)}")
             gte = GaussianTargetEncoder(list(group_cols), "target", prior_cols)
             good_train[features[-1]] = gte.fit_transform(good_train)
             train[features[-1]] = gte.transform(train)
+
+    with timer("Save as pickle - train"):
+        train.drop(["ts", "target"], 1, inplace=True)
+        train, _ = reduce_mem_usage(train, skip_cols=['ts', 'timestamp'], verbose=False)
+        train.to_pickle(f"{DATA_PATH}/preprocessed/train_clean.pkl")
+                            
+    with timer("Free up memory"):
+        del train, good_train, gte
+        gc.collect()
+
+    with timer("Add target encoding features - test"):    
+        features = []
+        good_train = good_train_
+        for group_cols, prior_cols in groups_and_priors.items():
+            print(group_cols)
+            features.append(f"gte_{'_'.join(group_cols)}")
+            gte = GaussianTargetEncoder(list(group_cols), "target", prior_cols)
+            good_train[features[-1]] = gte.fit_transform(good_train)
             test[features[-1]] = gte.transform(test)
             
-    train.info()
-    test.info()
-    good_train.info()
-        
-    with timer("Remove unnecessary columns"):
-        train.drop(["ts", "target"], 1, inplace=True)
+    with timer("Free up memory"):
+        del good_train, good_train_, gte
+        gc.collect()
+            
+    with timer("Save as pickle - test"):            
         test.drop(["ts", "target"], 1, inplace=True)
-
-    with timer("Reduce memory usage"):
-        train, _ = reduce_mem_usage(train, skip_cols=['ts', 'timestamp'], verbose=False)
         test, _ = reduce_mem_usage(test, skip_cols=['ts', 'timestamp'], verbose=False)
         gc.collect()
-
-    with timer("Save as pickle"):
-        train.to_pickle(f"{DATA_PATH}/preprocessed/train_clean.pkl")
-        del train
-        gc.collect()
-        test.to_pickle(f"{DATA_PATH}/preprocessed/test_clean.pkl")
+        test.to_pickle(f"{DATA_PATH}/preprocessed/test_clean.pkl")                           

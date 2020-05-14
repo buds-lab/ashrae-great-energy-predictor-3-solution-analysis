@@ -39,5 +39,3 @@ python scripts/03_train_lgb_site.py
 
 python scripts/03_train_mlp_meter.py --normalize_target
 python scripts/03_train_mlp_meter.py
-
-

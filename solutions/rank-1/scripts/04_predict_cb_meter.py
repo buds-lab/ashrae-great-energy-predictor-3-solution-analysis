@@ -1,6 +1,6 @@
 import os
 os.environ["CUDA_DEVICE_ORDER"]="PCI_BUS_ID"
-os.environ["CUDA_VISIBLE_DEVICES"]="1"
+os.environ["CUDA_VISIBLE_DEVICES"]="0"
 
 import argparse
 import glob
@@ -91,43 +91,46 @@ if __name__ == "__main__":
             target_encode_cols = [x for x in test.columns if "gte" in x]
             test[target_encode_cols] = test[target_encode_cols]/np.log1p(test[["square_feet"]].values)
 
-    # get base file name
-    test_preds = np.zeros(len(test))
-    for m in range(4):    
+    with timer("Predicting"):            
+        # get base file name
+        test_preds = np.zeros(len(test))
+        for m in range(4):    
 
-        # create sub model path
+            # create sub model path
+            if args.normalize_target:
+                sub_model_path = f"{MODEL_PATH}/cb-split_meter/target_normalization/meter_{m}"
+            else:
+                sub_model_path = f"{MODEL_PATH}/cb-split_meter/no_normalization/meter_{m}"
+
+            # remove indices not in this meter
+            X = test.loc[test.meter == m, FEATURES]
+            print(f"split meter {m}: test size {len(X)}")
+
+            # load models
+            model_list = [
+                CatBoostRegressor(task_type="GPU").load_model(model_name)
+                for model_name in glob.glob(f"{sub_model_path}/*")
+            ]
+
+            # predict    
+            msg = f'Predicting for meter {m} - models# {len(model_list)}, test# {len(X)}'
+            with timer(msg):            
+                assert len(model_list) != 0, "No models to load"
+                if len(model_list) == 1:
+                    preds = model_list[0].predict(X)
+                else:
+                    preds = np.mean([model.predict(X) for model in model_list], 0)
+                test_preds[test.meter == m] = preds
+
+        # invert target transformation    
         if args.normalize_target:
-            sub_model_path = f"{MODEL_PATH}/cb-split_meter/target_normalization/meter_{m}"
-        else:
-            sub_model_path = f"{MODEL_PATH}/cb-split_meter/no_normalization/meter_{m}"
-        
-        # remove indices not in this meter
-        X = test.loc[test.meter == m, FEATURES]
-        print(f"split meter {m}: test size {len(X)}")
+            test_preds *= np.log1p(test.square_feet)
 
-        # load models
-        model_list = [
-            CatBoostRegressor(task_type="GPU").load_model(model_name)
-            for model_name in glob.glob(f"{sub_model_path}/*")
-        ]
-        
-        # predict    
-        assert len(model_list) != 0, "No models to load"
-        if len(model_list) == 1:
-            preds = model_list[0].predict(X)
-        else:
-            preds = np.mean([model.predict(X) for model in model_list], 0)
-        test_preds[test.meter == m] = preds
-        
-    # invert target transformation    
-    if args.normalize_target:
-        test_preds *= np.log1p(test.square_feet)
-        
-    test_preds = np.expm1(test_preds)
+        test_preds = np.expm1(test_preds)
 
-    # correct site 0
-    test_preds[(test.site_id == 0) & (test.meter == 0)] *= 3.4118
-    test_preds[test_preds < 0 ] = 0
+        # correct site 0
+        test_preds[(test.site_id == 0) & (test.meter == 0)] *= 3.4118
+        test_preds[test_preds < 0 ] = 0
 
     # save data
     if args.normalize_target:

@@ -3,6 +3,7 @@ import os
 from pathlib import Path
 import random
 import sys
+import time
 
 import numpy as np
 import pandas as pd
@@ -15,12 +16,21 @@ from sklearn.metrics import mean_squared_error
 import holidays
 from scipy.signal import savgol_filter as sg
 
+from datetime import datetime
+from contextlib import contextmanager, redirect_stdout
+
 # Original code from https://www.kaggle.com/gemartin/load-data-reduce-memory-usage by @gemartin
 # Modified to support timestamp type, categorical type
 # Modified to add option to use float16 or not. feather format does not support float16.
 from pandas.api.types import is_datetime64_any_dtype as is_datetime
 from pandas.api.types import is_categorical_dtype
 
+@contextmanager
+def timer(name):
+    print(f'{datetime.now()} - [{name}] ...')
+    t0 = time.time()
+    yield
+    print(f'{datetime.now()} - [{name}] done in {time.time() - t0:.0f} s\n')
 
 def reduce_mem_usage(df, use_float16=False):
     """ iterate through all the columns of a dataframe and modify the data type

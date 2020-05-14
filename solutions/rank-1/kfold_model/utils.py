@@ -6,8 +6,18 @@ from sklearn.preprocessing import LabelEncoder
 from sklearn.model_selection import KFold
 import datetime
 import gc
+import time
+from contextlib import contextmanager, redirect_stdout
 
 # Original code from https://www.kaggle.com/aitude/ashrae-missing-weather-data-handling by @aitude
+
+@contextmanager
+def timer(name):
+    print(f'{datetime.datetime.now()} - [{name}] ...')
+    t0 = time.time()
+    yield
+    print(f'{datetime.datetime.now()} - [{name}] done in {time.time() - t0:.0f} s\n')
+
 
 def fill_weather_dataset(weather_df):
     

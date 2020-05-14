@@ -1,10 +1,11 @@
 import os
 os.environ["CUDA_DEVICE_ORDER"]="PCI_BUS_ID"
-os.environ["CUDA_VISIBLE_DEVICES"]="1"
+os.environ["CUDA_VISIBLE_DEVICES"]="0"
 
 import argparse
 import numpy as np 
 import pandas as pd
+from datetime import datetime
 from catboost import CatBoostRegressor
 from ashrae.utils import (
     MODEL_PATH,  timer, make_dir, rmsle,
@@ -106,58 +107,63 @@ if __name__ == "__main__":
     # get base file name
     model_name = f"cb-split_meter"
     make_dir(f"{MODEL_PATH}/{model_name}")
+    
+    with timer("Training"):
+        #for seed in range(3): #@Matt, difference seed adds very littler diversity
+        for seed in [0]:
+            #for n_months in [1,2,3,4,5,6]:
+            for n_months in [3]: #@Matt, n_months=3 brings optimal tradeoff between single model performance and diversity for the ensemble
+                validation_months_list = get_validation_months(n_months)
 
+                for fold_, validation_months in enumerate(validation_months_list):    
+                    for m in range(4):    
 
-    for seed in range(3):
-        for n_months in [1,2,3,4,5,6]:
-            validation_months_list = get_validation_months(6)
+                        # create sub model path
+                        if args.normalize_target:
+                            sub_model_path = f"{MODEL_PATH}/{model_name}/target_normalization/meter_{m}"
+                            make_dir(sub_model_path)
+                        else:
+                            sub_model_path = f"{MODEL_PATH}/{model_name}/no_normalization/meter_{m}"
+                            make_dir(sub_model_path)
 
-            for fold_, validation_months in enumerate(validation_months_list):    
-                for m in range(4):    
+                        # create model version
+                        model_version = "_".join([
+                            str(args.max_depth), str(args.lr),
+                            str(seed), str(n_months), str(fold_), 
+                        ])    
 
-                    # create sub model path
-                    if args.normalize_target:
-                        sub_model_path = f"{MODEL_PATH}/{model_name}/target_normalization/meter_{m}"
-                        make_dir(sub_model_path)
-                    else:
-                        sub_model_path = f"{MODEL_PATH}/{model_name}/no_normalization/meter_{m}"
-                        make_dir(sub_model_path)
+                        # check if we can skip this model
+                        full_sub_model_name = f"{sub_model_path}/{model_version}.pkl"
+                        if os.path.exists(full_sub_model_name):
+                            if not args.overwrite:
+                                print(f'{datetime.now()} -  {full_sub_model_name} already exists! Skipping...')
+                                break
 
-                    # create model version
-                    model_version = "_".join([
-                        str(args.max_depth), str(args.lr),
-                        str(seed), str(n_months), str(fold_), 
-                    ])    
+                        # get this months indices
+                        trn_idx = np.where(np.isin(train.month, validation_months, invert=True))[0]
+                        val_idx = np.where(np.isin(train.month, validation_months, invert=False))[0]
+                        #print(f"split meter: train size {len(trn_idx)} val size {len(val_idx)}")
 
-                    # check if we can skip this model
-                    full_sub_model_name = f"{sub_model_path}/{model_version}.pkl"
-                    if os.path.exists(full_sub_model_name):
-                        if not args.overwrite:
-                            break
+                        # remove indices not in this meter
+                        trn_idx = np.intersect1d(trn_idx, np.where(train.meter == m)[0])
+                        val_idx = np.intersect1d(val_idx, np.where(train.meter == m)[0])
+                        #print(f"split meter: train size {len(trn_idx)} val size {len(val_idx)}")
 
-                    # get this months indices
-                    trn_idx = np.where(np.isin(train.month, validation_months, invert=True))[0]
-                    val_idx = np.where(np.isin(train.month, validation_months, invert=False))[0]
-                    print(f"split meter: train size {len(trn_idx)} val size {len(val_idx)}")
+                        # initialize model
+                        model = CatBoostRegressor(iterations=9999, 
+                                                  learning_rate=args.lr,
+                                                  max_depth=args.max_depth,
+                                                  random_state=seed+9999*args.normalize_target,
+                                                  task_type="GPU")
 
-                    # remove indices not in this meter
-                    trn_idx = np.intersect1d(trn_idx, np.where(train.meter == m)[0])
-                    val_idx = np.intersect1d(val_idx, np.where(train.meter == m)[0])
-                    print(f"split meter: train size {len(trn_idx)} val size {len(val_idx)}")
+                        # fit model                        
+                        msg = f'Training {full_sub_model_name} - train# {len(trn_idx)} val# {len(val_idx)}'
+                        #print(f'{datetime.now()} - Training {full_sub_model_name} - train# {len(trn_idx)} val# {len(val_idx)}')
+                        with timer(msg):
+                            model.fit(train.loc[trn_idx, FEATURES], train.loc[trn_idx, "target"],
+                                      eval_set=[(train.loc[val_idx, FEATURES], train.loc[val_idx, "target"])],
+                                      cat_features=CAT_COLS,
+                                      use_best_model=True,                          
+                                      early_stopping_rounds=50)
 
-                    # initialize model
-                    model = CatBoostRegressor(iterations=9999, 
-                                              learning_rate=args.lr,
-                                              max_depth=args.max_depth,
-                                              random_state=seed+9999*args.normalize_target,
-                                              task_type="GPU")
-
-                    # fit model
-                    model.fit(train.loc[trn_idx, FEATURES], train.loc[trn_idx, "target"],
-                              eval_set=[(train.loc[val_idx, FEATURES], train.loc[val_idx, "target"])],
-                              cat_features=CAT_COLS,
-                              use_best_model=True,                          
-                              early_stopping_rounds=50,
-                              verbose=100)
-
-                    model.save_model(full_sub_model_name)
+                        model.save_model(full_sub_model_name)

@@ -88,43 +88,46 @@ if __name__ == "__main__":
             target_encode_cols = [x for x in test.columns if "gte" in x]
             test[target_encode_cols] = test[target_encode_cols]/np.log1p(test[["square_feet"]].values)
 
-    # get base file name
-    test_preds = np.zeros(len(test))
-    for s in range(16):    
+    with timer("Predicting"):            
+        # get base file name
+        test_preds = np.zeros(len(test))
+        for s in range(16):    
 
-        # create sub model path
+            # create sub model path
+            if args.normalize_target:
+                sub_model_path = f"{MODEL_PATH}/lgb-split_site/target_normalization/site_{s}"
+            else:
+                sub_model_path = f"{MODEL_PATH}/lgb-split_site/no_normalization/site_{s}"
+
+            # remove indices not in this site
+            X = test.loc[test.site_id == s, FEATURES]
+            print(f"split site {s}: test size {len(X)}")
+
+            # load models
+            model_list = [
+                lgb.Booster(model_file=model_name)
+                for model_name in glob.glob(f"{sub_model_path}/*")
+            ]
+
+            # predict
+            msg = f'Predicting for site {s} - models# {len(model_list)}, test# {len(X)}'
+            with timer(msg):            
+                assert len(model_list) != 0, "No models to load"
+                if len(model_list) == 1:
+                    preds = model_list[0].predict(X)
+                else:
+                    preds = np.mean([model.predict(X) for model in model_list], 0)
+                test_preds[test.site_id == s] = preds
+
+        # invert target transformation    
         if args.normalize_target:
-            sub_model_path = f"{MODEL_PATH}/lgb-split_site/target_normalization/site_{s}"
-        else:
-            sub_model_path = f"{MODEL_PATH}/lgb-split_site/no_normalization/site_{s}"
-        
-        # remove indices not in this site
-        X = test.loc[test.site_id == s, FEATURES]
-        print(f"split site {s}: test size {len(X)}")
+            test_preds *= np.log1p(test.square_feet)
 
-        # load models
-        model_list = [
-            lgb.Booster(model_file=model_name)
-            for model_name in glob.glob(f"{sub_model_path}/*")
-        ]
-        
-        # predict    
-        assert len(model_list) != 0, "No models to load"
-        if len(model_list) == 1:
-            preds = model_list[0].predict(X)
-        else:
-            preds = np.mean([model.predict(X) for model in model_list], 0)
-        test_preds[test.site_id == s] = preds
-        
-    # invert target transformation    
-    if args.normalize_target:
-        test_preds *= np.log1p(test.square_feet)
-        
-    test_preds = np.expm1(test_preds)
+        test_preds = np.expm1(test_preds)
 
-    # correct site 0
-    test_preds[(test.site_id == 0) & (test.meter == 0)] *= 3.4118
-    test_preds[test_preds < 0 ] = 0
+        # correct site 0
+        test_preds[(test.site_id == 0) & (test.meter == 0)] *= 3.4118
+        test_preds[test_preds < 0 ] = 0
 
     # save data
     if args.normalize_target:

@@ -1,14 +1,15 @@
 import os
 os.environ["CUDA_DEVICE_ORDER"]="PCI_BUS_ID"
-os.environ["CUDA_VISIBLE_DEVICES"]="1"
+os.environ["CUDA_VISIBLE_DEVICES"]="0"
 
+import argparse
 import glob
 import keras
 import numpy as np 
 import pandas as pd 
 
 from ashrae.utils import (
-    MODEL_PATH,  timer, make_dir, rmsle,
+    MODEL_PATH,  OUTPUT_PATH, timer, make_dir, rmsle,
     load_data, get_validation_months,
 )
 
@@ -73,49 +74,53 @@ if __name__ == "__main__":
 
     with timer("Loading data"):
         if args.normalize_target:
-            test = load_data("test_nn_tareget_normalized_meter")
+            test = load_data("test_nn_target_normalized_meter")
         else:
             test = load_data("test_nn_meter")
 
-    test_preds = np.zeros(len(test))
+    with timer("Predicting"):            
+        test_preds = np.zeros(len(test))
 
-    for m in range(4):        
-        print(m)
-        # get base file name
-        model_name = f"mlp-split_meter"
-        make_dir(f"{MODEL_PATH}/{model_name}")
+        for m in range(4):        
+            print(m)
+            # get base file name
+            model_name = f"mlp-split_meter"
+            make_dir(f"{MODEL_PATH}/{model_name}")
 
-        # create sub model path
+            # create sub model path
+            if args.normalize_target:
+                sub_model_path = f"{MODEL_PATH}/mlp-split_meter/target_normalization/meter_{m}"
+            else:
+                sub_model_path = f"{MODEL_PATH}/mlp-split_meter/no_normalization/meter_{m}"
+
+            # remove indices not in this meter
+            X = test.loc[test.meter == m, FEATURES + ["target"]]
+            print(f"split meter {m}: test size {len(X)}")
+
+            # load models
+            model_list = glob.glob(f"{sub_model_path}/*")
+            
+            # predict 
+            msg = f'Predicting for meter {m} - models# {len(model_list)}, test# {len(X)}'
+            with timer(msg):
+                # predict    
+                assert len(model_list) != 0, "No models to load"
+
+                if len(model_list) == 1:
+                    preds = predict_mlp(X, model_list[0])
+                else:
+                    preds = np.mean([predict_mlp(X, model_name) for model_name in model_list], 0)                           
+                test_preds[test.meter == m] = preds[:,0]
+
+        # invert target transformation    
         if args.normalize_target:
-            sub_model_path = f"{MODEL_PATH}/mlp-split_meter/target_normalization/meter_{m}"
-        else:
-            sub_model_path = f"{MODEL_PATH}/cmlp-split_meter/no_normalization/meter_{m}"
-        
-        # remove indices not in this meter
-        X = test.loc[test.meter == m, FEATURES + ["target"]]
-        print(f"split meter {m}: test size {len(X)}")
+            test_preds *= np.log1p(test.square_feet)
 
-        # load models
-        model_list = glob.glob(f"{sub_model_path}/*")
-                            
-        # predict    
-        assert len(model_list) != 0, "No models to load"
-        
-        if len(model_list) == 1:
-            preds = predict_mlp(X, model_list[0])
-        else:
-            preds = np.mean([predict_mlp(X, model_name) for model_name in model_list], 0)                           
-        test_preds[test.meter == m] = preds
-                
-    # invert target transformation    
-    if args.normalize_target:
-        test_preds *= np.log1p(test.square_feet)
-        
-    test_preds = np.expm1(test_preds)
+        test_preds = np.expm1(test_preds)
 
-    # correct site 0
-    test_preds[(test.site_id == 0) & (test.meter == 0)] *= 3.4118
-    test_preds[test_preds < 0 ] = 0
+        # correct site 0
+        test_preds[(test.site_id == 0) & (test.meter == 0)] *= 3.4118
+        test_preds[test_preds < 0 ] = 0
 
     # save data
     if args.normalize_target:
