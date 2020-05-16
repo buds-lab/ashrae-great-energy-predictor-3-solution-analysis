@@ -18,7 +18,7 @@ def load_preds(submissions_list):
 class GeneralizedMeanBlender():
     """Combines multiple predictions using generalized mean"""
 
-    def __init__(self, p_range=(-1,1), random_state=42):
+    def __init__(self, p_range=(0,1), random_state=42):
         """
         Args:
             p_range: Range of the power in the generalized mean. Defalut is (0,2).
