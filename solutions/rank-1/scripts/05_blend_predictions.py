@@ -43,7 +43,7 @@ if __name__ == "__main__":
         test_preds = np.zeros(len(test))
         for m in range(4):
             meter_indices = np.where(test[~np.isnan(target)].meter == m)[0]
-            gmb = GeneralizedMeanBlender(p_range=(-1,1))
+            gmb = GeneralizedMeanBlender(p_range=(0,1))
             gmb.fit(np.log1p(X_train[meter_indices]),
                     np.log1p(y_train[meter_indices]),
                     n_trials=100)
