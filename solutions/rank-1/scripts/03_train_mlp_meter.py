@@ -1,6 +1,6 @@
 import os
 os.environ["CUDA_DEVICE_ORDER"]="PCI_BUS_ID"
-os.environ["CUDA_VISIBLE_DEVICES"]="0"
+os.environ["CUDA_VISIBLE_DEVICES"]=""
 
 import argparse
 import keras
@@ -153,6 +153,12 @@ if __name__ == "__main__":
     with timer("Loading data"):
         train = load_data("train_nn_meter")
         train = train.loc[train.is_bad_meter_reading==0].reset_index(drop=True)
+        train.loc[(train.meter == 0) & (train.site_id == 0), "meter_reading"] *= 0.2931
+        if args.normalize_target:
+            square_feet = load_data("train_clean")["square_feet"]
+            train["target"] = np.log1p(train["target"]/square_feet)
+        else:
+            train["target"] = np.log1p(train["target"])
         
     with timer("Preprocesing"):
         meter_cat_counts = train.groupby(["meter"])[CAT_COLS].agg(lambda x: len(np.unique(x)))
@@ -163,9 +169,7 @@ if __name__ == "__main__":
 
     with timer("Training"):
         for seed in [0]:
-            #for n_months in [1,2,3,4,5,6]:
-            for n_months in [3]: #@Matt, n_months=3 brings optimal tradeoff between single model performance and diversity for the ensemble
-                # validation_months_list = get_validation_months(n_months) #@Matt, fixed the bug -> hard-coded n_months
+            for n_months in [1,2,3,4]:
                 validation_months_list = get_validation_months(n_months)
 
                 for fold_, validation_months in enumerate(validation_months_list):    

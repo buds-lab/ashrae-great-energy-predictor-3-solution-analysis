@@ -1,6 +1,6 @@
 import os
 os.environ["CUDA_DEVICE_ORDER"]="PCI_BUS_ID"
-os.environ["CUDA_VISIBLE_DEVICES"]="0"
+os.environ["CUDA_VISIBLE_DEVICES"]=""
 
 import argparse
 import glob
@@ -75,8 +75,10 @@ if __name__ == "__main__":
     with timer("Loading data"):
         if args.normalize_target:
             test = load_data("test_nn_target_normalized_meter")
+            test_square_feet = load_data("test_clean")["square_feet"].values
         else:
             test = load_data("test_nn_meter")
+        test["target"] = -1
 
     with timer("Predicting"):            
         test_preds = np.zeros(len(test))
@@ -114,7 +116,7 @@ if __name__ == "__main__":
 
         # invert target transformation    
         if args.normalize_target:
-            test_preds *= np.log1p(test.square_feet)
+            test_preds *= np.log1p(test_square_feet)
 
         test_preds = np.expm1(test_preds)
 

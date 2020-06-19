@@ -100,7 +100,7 @@ if __name__ == "__main__":
         if args.normalize_target:
             target_encode_cols = [x for x in train.columns if "gte" in x]
             train[target_encode_cols] = train[target_encode_cols]/np.log1p(train[["square_feet"]].values)
-            train["target"] = np.log1p(train["meter_reading"])/np.log1p(train["square_feet"])  
+            train["target"] = np.log1p(train["meter_reading"])/np.log1p(train["square_feet"])
         else:
             train["target"] = np.log1p(train["meter_reading"])
 
@@ -109,10 +109,8 @@ if __name__ == "__main__":
     make_dir(f"{MODEL_PATH}/{model_name}")
     
     with timer("Training"):
-        #for seed in range(3): #@Matt, difference seed adds very littler diversity
         for seed in [0]:
-            #for n_months in [1,2,3,4,5,6]:
-            for n_months in [3]: #@Matt, n_months=3 brings optimal tradeoff between single model performance and diversity for the ensemble
+            for n_months in [1,2,3,4,5,6]:
                 validation_months_list = get_validation_months(n_months)
 
                 for fold_, validation_months in enumerate(validation_months_list):    

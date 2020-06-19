@@ -113,8 +113,8 @@ if __name__ == "__main__":
     with timer("Training"):        
         # for seed in range(3): #@Matt, difference seed adds very littler diversity
         for seed in [0]:
-            #for n_months in [1,2,3,4,5,6]:
-            for n_months in [3]: #@Matt, n_months=3 brings optimal tradeoff between single model performance and diversity for the ensemble
+            for n_months in [1,2,3,4,5,6]:
+            #for n_months in [4,5,6]: #@Matt, n_months=3 brings optimal tradeoff between single model performance and diversity for the ensemble
                 # validation_months_list = get_validation_months(n_months) #@Matt, fixed the bug -> hard-coded n_months
                 validation_months_list = get_validation_months(n_months)
                 
@@ -152,6 +152,10 @@ if __name__ == "__main__":
                         trn_idx = np.intersect1d(trn_idx, np.where(train.site_id == s)[0])
                         val_idx = np.intersect1d(val_idx, np.where(train.site_id == s)[0])
                         #print(f"split site: train size {len(trn_idx)} val size {len(val_idx)}")
+                                                
+                        # skip if empty
+                        if len(val_idx) == 0:
+                            continue                        
 
                         # initialize model
                         model = lgb.LGBMRegressor(random_state=seed+9999*args.normalize_target,
