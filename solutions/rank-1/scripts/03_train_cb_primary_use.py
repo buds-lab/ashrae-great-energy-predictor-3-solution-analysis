@@ -123,7 +123,7 @@ if __name__ == "__main__":
         #for seed in range(3): #@Matt, difference seed adds very littler diversity
         for seed in [0]:
             #for n_months in [1,2,3,4,5,6]:
-            for n_months in [3]: #@Matt, n_months=3 brings optimal tradeoff between single model performance and diversity for the ensemble
+            for n_months in [1,2,3]: #@Matt
                 validation_months_list = get_validation_months(n_months)
 
                 for fold_, validation_months in enumerate(validation_months_list):    
