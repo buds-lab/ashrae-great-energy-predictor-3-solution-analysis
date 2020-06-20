@@ -9,7 +9,7 @@ beautifulsoup4==4.8.1
 bleach==3.1.0
 bs4==0.0.1
 catboost==0.17.5
-certifi==2019.9.11
+#certifi==2019.6.16
 chardet==3.0.4
 Click==7.0
 cliff==2.16.0
@@ -87,7 +87,7 @@ prometheus-client==0.7.1
 prompt-toolkit==2.0.9
 protobuf==3.9.1
 ptyprocess==0.6.0
-pyarrow==0.14.1
+pyarrow==0.14.0
 pydmd==0.2.1
 Pygments==2.4.2
 pyparsing==2.4.2
@@ -125,8 +125,8 @@ termcolor==1.1.0
 terminado==0.8.2
 testpath==0.4.2
 text-unidecode==1.2
-torch==1.2.0
-torchvision==0.4.0
+# torch==1.2.0
+# torchvision==0.4.0
 tornado==6.0.3
 tqdm==4.35.0
 traitlets==4.3.2
