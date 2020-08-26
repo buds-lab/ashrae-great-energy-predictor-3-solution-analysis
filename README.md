@@ -1,6 +1,12 @@
-# ASHRAE - Great Energy Predictor III - Top 5 winning solutions
+# ASHRAE Great Energy Predictor III (GEPIII) - Top 5 Winning Solutions Explained
 
 This repository contains the code and documentation of top-5 winning solutions from the ASHRAE - Great Energy Predictor III cometition. It also contains comparative analysis of these solutions with respect to their characteristics such as workflow, computation time, and score distributation with respect to meter type, site, and primary space usage, etc.
+
+A full overview of the GEPIII competition can be [found online](https://www.tandfonline.com/doi/full/10.1080/23744731.2020.1795514)
+
+To cite this analysis:
+
+Clayton Miller, Pandarasamy Arjunan, Anjukan Kathirgamanathan, Chun Fu, Jonathan Roth, June Young Park, Chris Balbach, Krishnan Gowri, Zoltan Nagy, Anthony D. Fontanini & Jeff Haberl (2020) The ASHRAE Great Energy Predictor III competition: Overview and results, Science and Technology for the Built Environment, DOI: 10.1080/23744731.2020.1795514
 
 ### First rank solution
  - [Code](../../tree/master/solutions/rank-1/)
