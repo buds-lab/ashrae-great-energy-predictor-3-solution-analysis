@@ -3,7 +3,7 @@
 This repository contains the code and documentation of top-5 winning solutions from the [ASHRAE - Great Energy Predictor III cometition](https://www.kaggle.com/c/ashrae-energy-prediction) that was held in late 2019 on the Kaggle platform. It also contains comparative analysis of these solutions with respect to their characteristics such as workflow, computation time, and score distributation with respect to meter type, site, and primary space usage, etc.
 
 ## Full Overview
-A full overview of the GEPIII competition can be [found in a Science and Technology for the Built Environment Journal](https://www.tandfonline.com/doi/full/10.1080/23744731.2020.1795514) - Preprint found on arXiv
+A full overview of the GEPIII competition can be [found in a Science and Technology for the Built Environment Journal](https://www.tandfonline.com/doi/full/10.1080/23744731.2020.1795514) - [Preprint found on arXiv](https://arxiv.org/abs/2007.06933)
 
 To cite this competition or analysis:
 
