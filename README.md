@@ -26,21 +26,21 @@ The [top five winning solutions can be understood through a series of explainer 
  - [Code](../../tree/master/solutions/rank-1/)
  - [Solution Summary (Kaggle discussion board)](https://www.kaggle.com/c/ashrae-energy-prediction/discussion/124709)
  - [Overview Video of Solution by team member Matt Motoki](https://youtu.be/ZVX9EbHnH0E)
- - [ASHRAE Annual Meeting Solution Overvew Presentation by team member Matt Motoki](https://youtu.be/fKgNKTAn26M)
+ - [ASHRAE Annual Meeting Solution Overview Presentation by team member Matt Motoki](https://youtu.be/fKgNKTAn26M)
  
 ### Second Ranked Solution
  - [Code](../../tree/master/solutions/rank-2/)
  - [Solution summary (PDF)](../../tree/master/solutions/rank-2/ASHRAE%20-%20Great%20Energy%20Predictor%20III%20solution.pdf)
  - [Solution Summary (Kaggle discussion board)](https://www.kaggle.com/c/ashrae-energy-prediction/discussion/123481)
  - [Overview Video of Solution by team member Rohan Rao](https://youtu.be/Zfhb4c4mB44)
- - [ASHRAE Annual Meeting Solution Overvew Presentation by team member Rohan Rao](https://youtu.be/EhC9CCqMxkM)
+ - [ASHRAE Annual Meeting Solution Overview Presentation by team member Rohan Rao](https://youtu.be/EhC9CCqMxkM)
  
 ### Third Ranked Solution
  - [Code](../../tree/master/solutions/rank-3/)
  - [Solution summary (PDF)](../../tree/master/solutions/rank-3/model_summary.pdf)
  - [Solution Summary (Kaggle discussion board)](https://www.kaggle.com/c/ashrae-energy-prediction/discussion/124984)
  - [Overview Video of Solution by team member Xavier Capdepon](https://youtu.be/vc2JOpAVDUA)
- - [ASHRAE Annual Meeting Solution Overvew Presentation by Xavier Capdepon](https://youtu.be/aqOmV37Htp0)
+ - [ASHRAE Annual Meeting Solution Overview Presentation by Xavier Capdepon](https://youtu.be/aqOmV37Htp0)
   
 ### Fourth Ranked Solution
  - [Code](../../tree/master/solutions/rank-4/)
