@@ -2,6 +2,8 @@
 
 This repository contains the code and documentation of top-5 winning solutions from the [ASHRAE - Great Energy Predictor III cometition](https://www.kaggle.com/c/ashrae-energy-prediction) that was held in late 2019 on the Kaggle platform. It also contains comparative analysis of these solutions with respect to their characteristics such as workflow, computation time, and score distributation with respect to meter type, site, and primary space usage, etc.
 
+An video overview of the competition can be found from the [ASHRAE 2020 Online Conference](https://youtu.be/xqtBVy5cZgA) by Clayton Miller from the [BUDS Lab at the National University of Singapore](http://budslab.org/)
+
 ## Full Overview
 A full overview of the GEPIII competition can be [found in a Science and Technology for the Built Environment Journal](https://www.tandfonline.com/doi/full/10.1080/23744731.2020.1795514) - [Preprint found on arXiv](https://arxiv.org/abs/2007.06933)
 
@@ -17,34 +19,41 @@ Instructions to fully reproduce each solution are [found in the wiki for this re
 The raw data data for the [top 5 winning solutions - code and docs (original submission by the winners)](https://www.dropbox.com/sh/73iryui7t0w74ik/AAAY-yF87A2zrLdqHv11vFlsa?dl=0)
 
 ## Explanatory Overview Videos from the Winners
-The [Top 5 winning solutions can be seen on a series of explainer videos hosted here, including an extended presentation at the ASHRAE 2020 Online Conferece in June 2020](https://www.dropbox.com/sh/tmnhkmy33vs3uya/AACVU-CcwyqGwApEvhNmSH4Qa?dl=0). **Potential users of these solutions should note that each winner gave advice on the solution complexity vs. accuracy.** 
+The [top five winning solutions can be understood through a series of explainer videos hosted here, including extended presentations at the ASHRAE 2020 Online Conferece in June 2020](https://www.dropbox.com/sh/tmnhkmy33vs3uya/AACVU-CcwyqGwApEvhNmSH4Qa?dl=0). **Potential users of these solutions should note that each winner gave advice on the solution complexity vs. accuracy.** These videos are also listed below individually for each solution.
 
 ## Solutions Overview Details
-### First Rank Solution
+### First Ranked Solution
  - [Code](../../tree/master/solutions/rank-1/)
  - [Solution Summary (Kaggle discussion board)](https://www.kaggle.com/c/ashrae-energy-prediction/discussion/124709)
+ - [Overview Video of Solution by Matt Motoki](https://youtu.be/ZVX9EbHnH0E)
+ - [ASHRAE Annual Meeting Solution Overvew Presentation by Matt Motoki](https://youtu.be/fKgNKTAn26M)
  
-### Second rank solution
+### Second Ranked Solution
  - [Code](../../tree/master/solutions/rank-2/)
  - [Solution summary (PDF)](../../tree/master/solutions/rank-2/ASHRAE%20-%20Great%20Energy%20Predictor%20III%20solution.pdf)
  - [Solution Summary (Kaggle discussion board)](https://www.kaggle.com/c/ashrae-energy-prediction/discussion/123481)
+ - [Overview Video of Solution by team member Rohan Rao](https://youtu.be/Zfhb4c4mB44)
+ - [ASHRAE Annual Meeting Solution Overvew Presentation by team member Rohan Rao](https://youtu.be/EhC9CCqMxkM)
  
-### Third rank solution
+### Third Ranked Solution
  - [Code](../../tree/master/solutions/rank-3/)
  - [Solution summary (PDF)](../../tree/master/solutions/rank-3/model_summary.pdf)
  - [Solution Summary (Kaggle discussion board)](https://www.kaggle.com/c/ashrae-energy-prediction/discussion/124984)
+ - [Overview Video of Solution by team member Xavier Capdepon](https://youtu.be/vc2JOpAVDUA)
+ - [ASHRAE Annual Meeting Solution Overvew Presentation by Xavier Capdepon](https://youtu.be/aqOmV37Htp0)
   
-### Fourth rank solution
+### Fourth Ranked Solution
  - [Code](../../tree/master/solutions/rank-4/)
  - [Solution summary (.DOCX)](../../tree/master/solutions/rank-4/MODEL%20SUMMARY.docx)
  - [Solution Summary (Kaggle discussion board)](https://www.kaggle.com/c/ashrae-energy-prediction/discussion/124788)
+ - [Overview Video of Solution by Jun Yang](https://youtu.be/m4SigmQ9xhs)
  
-### Fifth rank solution
+### Fifth Ranked Solution
  - [Code](../../tree/master/solutions/rank-5/)
  - [Solution summary (.DOCX)](../../tree/master/solutions/rank-5/ModelSummary.docx)
  - [Solution summary presentation (PDF)](../../tree/master/solutions/rank-5/ASHRAE_fifth_place_solution.pdf)
  - [Solution Summary (Kaggle discussion board)](https://www.kaggle.com/c/ashrae-energy-prediction/discussion/127086)
- 
+ - [Overview Video of Solution by team member Yuta Kobayashi](https://youtu.be/2WG1Z4eiL7w)
 
 ## Solutions High Level Comparisons
 |   Final Rank | Team              |   Final Private Leaderboard Score | Preprocessing Strategy                                                     | Features Strategy Overview                                                                                                           | Modeling Strategy Overview                                                                                          | Post-Processing strategy                                               |
