@@ -14,28 +14,28 @@ Clayton Miller, Pandarasamy Arjunan, Anjukan Kathirgamanathan, Chun Fu, Jonathan
 
 ### First rank solution
  - [Code](../../tree/master/solutions/rank-1/)
- - [Sulution summary (Kaggle discussion board)](https://www.kaggle.com/c/ashrae-energy-prediction/discussion/124709)
+ - [Solution Summary (Kaggle discussion board)](https://www.kaggle.com/c/ashrae-energy-prediction/discussion/124709)
  
 ### Second rank solution
  - [Code](../../tree/master/solutions/rank-2/)
  - [Solution summary (PDF)](../../tree/master/solutions/rank-2/ASHRAE%20-%20Great%20Energy%20Predictor%20III%20solution.pdf)
- - [Sulution summay (Kaggle discussion board)](https://www.kaggle.com/c/ashrae-energy-prediction/discussion/123481)
+ - [Solution Summary (Kaggle discussion board)](https://www.kaggle.com/c/ashrae-energy-prediction/discussion/123481)
  
 ### Third rank solution
  - [Code](../../tree/master/solutions/rank-3/)
  - [Solution summary (PDF)](../../tree/master/solutions/rank-3/model_summary.pdf)
- - [Sulution summay (Kaggle discussion board)](https://www.kaggle.com/c/ashrae-energy-prediction/discussion/124984)
+ - [Solution Summary (Kaggle discussion board)](https://www.kaggle.com/c/ashrae-energy-prediction/discussion/124984)
   
 ### Fourth rank solution
  - [Code](../../tree/master/solutions/rank-4/)
  - [Solution summary (.DOCX)](../../tree/master/solutions/rank-4/MODEL%20SUMMARY.docx)
- - [Sulution summay (Kaggle discussion board)](https://www.kaggle.com/c/ashrae-energy-prediction/discussion/124788)
+ - [Solution Summary (Kaggle discussion board)](https://www.kaggle.com/c/ashrae-energy-prediction/discussion/124788)
  
 ### Fifth rank solution
  - [Code](../../tree/master/solutions/rank-5/)
  - [Solution summary (.DOCX)](../../tree/master/solutions/rank-5/ModelSummary.docx)
  - [Solution summary presentation (PDF)](../../tree/master/solutions/rank-5/ASHRAE_fifth_place_solution.pdf)
- - [Sulution summay (Kaggle discussion board)](https://www.kaggle.com/c/ashrae-energy-prediction/discussion/127086)
+ - [Solution Summary (Kaggle discussion board)](https://www.kaggle.com/c/ashrae-energy-prediction/discussion/127086)
  
 
 ## Comparison
