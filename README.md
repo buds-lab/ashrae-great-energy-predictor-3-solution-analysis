@@ -12,7 +12,7 @@ Clayton Miller, Pandarasamy Arjunan, Anjukan Kathirgamanathan, Chun Fu, Jonathan
 The data set from the competition is now opened as the [Building Data Genome 2 project](https://github.com/buds-lab/building-data-genome-project-2) that is outlined in [a paper submitted to the journal Scientific Data](https://arxiv.org/abs/2006.02273)
 
 ## Detailed Reproduction of Solutions Overview
-Instructions to fully reproduce each solution are [found in the wiki for this repository](https://github.com/buds-lab/ashrae-great-energy-predictor-3-solution-analysis/wiki).
+Instructions to fully reproduce each solution are [found in the wiki for this repository and other details found below](https://github.com/buds-lab/ashrae-great-energy-predictor-3-solution-analysis/wiki).
 
 The raw data data for the [top 5 winning solutions - code and docs (original submission by the winners)](https://www.dropbox.com/sh/73iryui7t0w74ik/AAAY-yF87A2zrLdqHv11vFlsa?dl=0)
 
