@@ -2,19 +2,23 @@
 
 This repository contains the code and documentation of top-5 winning solutions from the ASHRAE - Great Energy Predictor III cometition. It also contains comparative analysis of these solutions with respect to their characteristics such as workflow, computation time, and score distributation with respect to meter type, site, and primary space usage, etc.
 
+## Full Overview
 A full overview of the GEPIII competition can be [found in a Science and Technology for the Built Environment Journal](https://www.tandfonline.com/doi/full/10.1080/23744731.2020.1795514)
-
-Instructions to fully reproduce each solution are [found in the wiki for this repository](https://github.com/buds-lab/ashrae-great-energy-predictor-3-solution-analysis/wiki).
-
-The raw data data for the [top 5 winning solutions - code and docs (original submission by the winners)](https://www.dropbox.com/sh/73iryui7t0w74ik/AAAY-yF87A2zrLdqHv11vFlsa?dl=0)
-
-The [Top 5 winning solutions can be seen on a series of explainer videos hosted here, including an extended presentation at the ASHRAE 2020 Online Conferece in June 2020](https://www.dropbox.com/sh/tmnhkmy33vs3uya/AACVU-CcwyqGwApEvhNmSH4Qa?dl=0)
 
 To cite this competition or analysis:
 
 Clayton Miller, Pandarasamy Arjunan, Anjukan Kathirgamanathan, Chun Fu, Jonathan Roth, June Young Park, Chris Balbach, Krishnan Gowri, Zoltan Nagy, Anthony D. Fontanini & Jeff Haberl (2020) The ASHRAE Great Energy Predictor III competition: Overview and results, Science and Technology for the Built Environment, DOI: 10.1080/23744731.2020.1795514
 
-### First rank solution
+## Detailed Reproduction of Solutions Overview
+Instructions to fully reproduce each solution are [found in the wiki for this repository](https://github.com/buds-lab/ashrae-great-energy-predictor-3-solution-analysis/wiki).
+
+The raw data data for the [top 5 winning solutions - code and docs (original submission by the winners)](https://www.dropbox.com/sh/73iryui7t0w74ik/AAAY-yF87A2zrLdqHv11vFlsa?dl=0)
+
+## Explanatory Overview Videos from the Winners
+The [Top 5 winning solutions can be seen on a series of explainer videos hosted here, including an extended presentation at the ASHRAE 2020 Online Conferece in June 2020](https://www.dropbox.com/sh/tmnhkmy33vs3uya/AACVU-CcwyqGwApEvhNmSH4Qa?dl=0). **Potential users of these solutions should note that each winner gave advice on the solution complexity vs. accuracy.** 
+
+## Solutions Overview Details
+### First Rank Solution
  - [Code](../../tree/master/solutions/rank-1/)
  - [Solution Summary (Kaggle discussion board)](https://www.kaggle.com/c/ashrae-energy-prediction/discussion/124709)
  
@@ -40,7 +44,7 @@ Clayton Miller, Pandarasamy Arjunan, Anjukan Kathirgamanathan, Chun Fu, Jonathan
  - [Solution Summary (Kaggle discussion board)](https://www.kaggle.com/c/ashrae-energy-prediction/discussion/127086)
  
 
-## Comparison
+## Solutions High Level Comparisons
 |   Final Rank | Team Name             |   Final Private Leaderboard Score | Preprocessing Strategy                                                     | Features Strategy Overview                                                                                                           | Modeling Strategy Overview                                                                                          | Post-Processing strategy                                               |
 |-------------:|:----------------------|----------------------------------:|:---------------------------------------------------------------------------|:-------------------------------------------------------------------------------------------------------------------------------------|:--------------------------------------------------------------------------------------------------------------------|:-----------------------------------------------------------------------|
 |            1 | Isamu & Matt          |                             1.231 | Removed anomalies in meter data and imputed missing values in weather data | 28 features, Extensively focused on feature engineering and selected                                                                 | LightGBM, CatBoost, and MLP models trained on different subsets of the training and public data                     | Ensembled the model predictions using weighted generalized mean.       |
@@ -49,7 +53,7 @@ Clayton Miller, Pandarasamy Arjunan, Anjukan Kathirgamanathan, Chun Fu, Jonathan
 |            4 | 不用leakage上分太难了 |                             1.235 | Not available                                                              | 23 features including raw data, aggregate, weather lag features, and target encoding. Features are selected using sub-training sets. | XGBoost (2-fold, 5-fold) and Light GBM (3-fold)                                                                     | Ensembled three models. Weights were determined using the leaked data. |
 |            5 | mma                   |                             1.237 | Dropped long streaks of constant values and zero target values.            | Target encoding using percentile and proportion and used the weather data temporal features                                          | LightGBM in two steps -- identify model parameters on a subset and then train on the whole set for each building.   | Weighted average.                                                      |
 
-### Comparison of execution time for each solution
+### Execution Time Comparison
 
 | Solution | Preprocessing | Feature engineering | Training | Prediction | Ensembling | Total (minutes) |
 |----------|--------------:|--------------------:|---------:|-----------:|-----------:|----------------:|
