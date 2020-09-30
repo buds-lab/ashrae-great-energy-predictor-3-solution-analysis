@@ -9,6 +9,8 @@ To cite this competition or analysis:
 
 Clayton Miller, Pandarasamy Arjunan, Anjukan Kathirgamanathan, Chun Fu, Jonathan Roth, June Young Park, Chris Balbach, Krishnan Gowri, Zoltan Nagy, Anthony D. Fontanini & Jeff Haberl (2020) The ASHRAE Great Energy Predictor III competition: Overview and results, Science and Technology for the Built Environment, DOI: 10.1080/23744731.2020.1795514
 
+The data set from the competition is now opened as the [Building Data Genome 2 project](https://github.com/buds-lab/building-data-genome-project-2) that is outlined in [a paper submitted to the journal Scientific Data](https://arxiv.org/abs/2006.02273)
+
 ## Detailed Reproduction of Solutions Overview
 Instructions to fully reproduce each solution are [found in the wiki for this repository](https://github.com/buds-lab/ashrae-great-energy-predictor-3-solution-analysis/wiki).
 
