@@ -4,6 +4,10 @@ This repository contains the code and documentation of top-5 winning solutions f
 
 A full overview of the GEPIII competition can be [found online](https://www.tandfonline.com/doi/full/10.1080/23744731.2020.1795514)
 
+The raw data data for the [top 5 winning solutions - code and docs (original submission by the winners)](https://www.dropbox.com/sh/73iryui7t0w74ik/AAAY-yF87A2zrLdqHv11vFlsa?dl=0)
+
+The [Top 5 winning solutions can be seen on a series of explainer videos hosted here, including an extended presentation at the ASHRAE 2020 Online Conferece in June 2020](https://www.dropbox.com/sh/tmnhkmy33vs3uya/AACVU-CcwyqGwApEvhNmSH4Qa?dl=0)
+
 To cite this analysis:
 
 Clayton Miller, Pandarasamy Arjunan, Anjukan Kathirgamanathan, Chun Fu, Jonathan Roth, June Young Park, Chris Balbach, Krishnan Gowri, Zoltan Nagy, Anthony D. Fontanini & Jeff Haberl (2020) The ASHRAE Great Energy Predictor III competition: Overview and results, Science and Technology for the Built Environment, DOI: 10.1080/23744731.2020.1795514
@@ -55,6 +59,4 @@ Clayton Miller, Pandarasamy Arjunan, Anjukan Kathirgamanathan, Chun Fu, Jonathan
 
 Note: all solutions were reproduced on AWS EC2 (g4dn.4xlarge) using Deep Learning AMI.
 
-## Links
-1. [Top 5 winning solutions - code and docs (original submission by the winners)](https://www.dropbox.com/sh/73iryui7t0w74ik/AAAY-yF87A2zrLdqHv11vFlsa?dl=0)
-2. [Top 5 winning solutions - explainer videos](https://www.dropbox.com/sh/tmnhkmy33vs3uya/AACVU-CcwyqGwApEvhNmSH4Qa?dl=0)
+
