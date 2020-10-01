@@ -4,12 +4,26 @@ This repository contains the code and documentation of top-5 winning solutions f
 
 An video overview of the competition can be found from the [ASHRAE 2020 Online Conference](https://youtu.be/xqtBVy5cZgA) by Clayton Miller from the [BUDS Lab at the National University of Singapore](http://budslab.org/)
 
-## Full Overview
+## Overview Publication
 A full overview of the GEPIII competition can be [found in a Science and Technology for the Built Environment Journal](https://www.tandfonline.com/doi/full/10.1080/23744731.2020.1795514) - [Preprint found on arXiv](https://arxiv.org/abs/2007.06933)
 
 To cite this competition or analysis:
 
 Clayton Miller, Pandarasamy Arjunan, Anjukan Kathirgamanathan, Chun Fu, Jonathan Roth, June Young Park, Chris Balbach, Krishnan Gowri, Zoltan Nagy, Anthony D. Fontanini & Jeff Haberl (2020) The ASHRAE Great Energy Predictor III competition: Overview and results, Science and Technology for the Built Environment, DOI: 10.1080/23744731.2020.1795514
+
+### Overview Abstract 
+
+In late 2019, ASHRAE hosted the Great Energy Predictor III (GEPIII) machine learning competition on the Kaggle platform. This
+launch marked the third energy prediction competition from ASHRAE and the first since the mid-1990s. In this updated version,
+the competitors were provided with over 20 million points of training data from 2,380 energy meters collected for 1,448 buildings
+from 16 sources. This competition’s overall objective was to find the most accurate modeling solutions for the prediction of over
+41 million private and public test data points. The competition had 4,370 participants, split across 3,614 teams from 94 countries
+who submitted 39,403 predictions. In addition to the top five winning workflows, the competitors publicly shared 415 reproducible
+online machine learning workflow examples (notebooks), including over 40 additional, full solutions. This paper gives a high-level
+overview of the competition preparation and dataset, competitors and their discussions, machine learning workflows and models
+generated, winners and their submissions, discussion of lessons learned, and competition outputs and next steps. The most popular
+and accurate machine learning workflows used large ensembles of mostly gradient boosting tree models, such as LightGBM. Similar
+to the first predictor competition, preprocessing of the data sets emerged as a key differentiator.
 
 The data set from the competition is now opened as the [Building Data Genome 2 project](https://github.com/buds-lab/building-data-genome-project-2) that is outlined in [a paper submitted to the journal Scientific Data](https://arxiv.org/abs/2006.02273)
 
