@@ -13,6 +13,12 @@ Clayton Miller, Pandarasamy Arjunan, Anjukan Kathirgamanathan, Chun Fu, Jonathan
 
 The data set from the competition is now opened as the [Building Data Genome 2 project](https://github.com/buds-lab/building-data-genome-project-2) that is outlined in [a paper submitted to the journal Scientific Data](https://arxiv.org/abs/2006.02273)
 
+Key takeaways:
+- Large ensembles of models are essential in the application of ML on building energy prediction at scale
+- Gradient boosting tree models were the most common in these ensembles, especially LightGBM.
+- Pre-processing of the training data, including outlier removal, was the key differentiator in the top winners and was usually not an automated process.
+- Many of the winners had engineering backgrounds and even previous experience in meter prediction
+
 ## Detailed Reproduction of Solutions Overview
 Instructions to fully reproduce each solution are [found in the wiki for this repository and other details found below](https://github.com/buds-lab/ashrae-great-energy-predictor-3-solution-analysis/wiki).
 
