@@ -19,6 +19,8 @@ Key takeaways:
 - Pre-processing of the training data, including outlier removal, was the key differentiator in the top winners and was usually not an automated process.
 - Many of the winners had engineering backgrounds and even previous experience in meter prediction
 
+Special credit goes to [Dr. Samy Arjunan](https://github.com/samy101) for organizing and replicating the solutions in this repository
+
 ## Detailed Reproduction of Solutions Overview
 Instructions to fully reproduce each solution are [found in the wiki for this repository and other details found below](https://github.com/buds-lab/ashrae-great-energy-predictor-3-solution-analysis/wiki).
 
