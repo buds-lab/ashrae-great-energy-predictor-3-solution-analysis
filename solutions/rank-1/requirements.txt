@@ -39,7 +39,7 @@ colorama==0.4.3
 colorlog==4.1.0
 contextlib2==0.6.0.post1
 convertdate==2.2.1
-cryptography==2.8
+cryptography==3.2
 cycler==0.10.0
 Cython==0.29.15
 cytoolz==0.10.1
