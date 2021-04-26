@@ -176,7 +176,7 @@ protobuf3-to-dict==0.1.5
 psutil==5.7.0
 psycopg2==2.7.5
 ptyprocess==0.6.0
-py==1.8.1
+py==1.10.0
 pyarrow==0.17.0
 pycodestyle==2.5.0
 pycosat==0.6.3
