@@ -89,7 +89,7 @@ protobuf==3.9.1
 ptyprocess==0.6.0
 pyarrow==0.14.0
 pydmd==0.2.1
-Pygments==2.4.2
+Pygments==2.7.4
 pyparsing==2.4.2
 pyperclip==1.7.0
 pyrsistent==0.15.4
