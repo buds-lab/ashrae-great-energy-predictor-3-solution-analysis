@@ -25,7 +25,7 @@ generated, winners and their submissions, discussion of lessons learned, and com
 and accurate machine learning workflows used large ensembles of mostly gradient boosting tree models, such as LightGBM. Similar
 to the first predictor competition, preprocessing of the data sets emerged as a key differentiator.
 
-The data set from the competition is now opened as the [Building Data Genome 2 project](https://github.com/buds-lab/building-data-genome-project-2) that is outlined in [a paper submitted to the journal Scientific Data](https://arxiv.org/abs/2006.02273)
+The data set from the competition is now opened as the [Building Data Genome 2 project](https://github.com/buds-lab/building-data-genome-project-2) that is outlined in a publication in [Nature Scientific Data](https://www.nature.com/articles/s41597-020-00712-x) -- [preprint on arxiv](https://arxiv.org/abs/2006.02273).
 
 Key takeaways:
 - Large ensembles of models are essential in the application of ML on building energy prediction at scale
