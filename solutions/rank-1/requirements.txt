@@ -163,7 +163,7 @@ pbr==5.4.5
 pep8==1.7.1
 pexpect==4.8.0
 pickleshare==0.7.5
-Pillow==7.0.0
+Pillow==9.0.0
 pkginfo==1.5.0.1
 plotly==4.6.0
 pluggy==0.13.1
