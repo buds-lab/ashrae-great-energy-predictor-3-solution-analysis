@@ -33,7 +33,7 @@ holidays==0.9.11
 idna==2.8
 imagesize==1.1.0
 ipykernel==5.1.2
-ipython==7.8.0
+ipython==7.16.3
 ipython-genutils==0.2.0
 isort==4.3.21
 japanize-matplotlib==1.0.5
