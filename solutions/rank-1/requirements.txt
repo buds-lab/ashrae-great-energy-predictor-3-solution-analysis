@@ -70,7 +70,7 @@ h5py==2.10.0
 hdijupyterutils==0.15.0
 HeapDict==1.0.1
 holidays==0.10.2
-horovod==0.19.0
+horovod==0.24.0
 html5lib==1.0.1
 hypothesis==5.8.3
 idna==2.9
