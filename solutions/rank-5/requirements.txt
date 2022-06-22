@@ -70,7 +70,7 @@ nbdime==1.1.0
 nbformat==4.4.0
 notebook==6.0.1
 numba==0.46.0
-numpy==1.17.4
+numpy==1.22.0
 optuna==0.19.0
 pandas==0.24.2
 pandocfilters==1.4.2
