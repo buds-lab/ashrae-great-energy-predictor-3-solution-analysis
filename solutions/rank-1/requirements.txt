@@ -47,7 +47,7 @@ dask==2.14.0
 decorator==4.4.2
 defusedxml==0.6.0
 diff-match-patch==20181111
-distributed==2.14.0
+distributed==2021.10.0
 docutils==0.15.2
 entrypoints==0.3
 environment-kernels==1.1.1
