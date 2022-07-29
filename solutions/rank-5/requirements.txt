@@ -63,7 +63,7 @@ matplotlib==3.0.3
 matrixprofile-ts==0.0.9
 meteocalc==1.1.0
 missingno==0.4.2
-mistune==0.8.4
+mistune==2.0.3
 mlxtend==0.17.0
 nbconvert==5.6.0
 nbdime==1.1.0
