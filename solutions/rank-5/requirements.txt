@@ -56,7 +56,7 @@ kiwisolver==1.1.0
 lightgbm==2.2.3
 llvmlite==0.30.0
 lxml==4.6.3
-Mako==1.1.0
+Mako==1.2.2
 Markdown==3.1.1
 MarkupSafe==1.1.1
 matplotlib==3.0.3
