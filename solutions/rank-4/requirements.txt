@@ -171,7 +171,7 @@ ply==3.11
 prettytable==0.7.2
 prometheus-client==0.7.1
 prompt-toolkit==3.0.4
-protobuf==3.11.3
+protobuf==3.18.3
 protobuf3-to-dict==0.1.5
 psutil==5.7.0
 psycopg2==2.7.5
