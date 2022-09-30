@@ -39,7 +39,7 @@ isort==4.3.21
 japanize-matplotlib==1.0.5
 jedi==0.15.1
 Jinja2==2.11.3
-joblib==0.13.2
+joblib==1.2.0
 jsonschema==3.0.2
 jupyter-client==5.3.1
 jupyter-contrib-core==0.3.3
