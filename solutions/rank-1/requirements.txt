@@ -90,7 +90,7 @@ jedi==0.15.2
 jeepney==0.4.3
 Jinja2==2.11.1
 jmespath==0.9.4
-joblib==0.14.1
+joblib==1.2.0
 json5==0.9.4
 jsonschema==3.2.0
 jupyter==1.0.0
